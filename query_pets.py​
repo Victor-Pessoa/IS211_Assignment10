@@ -1,3 +1,37 @@
+import sqlite3
 
-if __name__ == "__main__":
-    pass
+conn = sqlite3.connect('pets.db')
+cursor = conn.cursor()
+
+cursor.execute('SELECT * FROM person')
+person_rows = cursor.fetchall()
+
+print('Persons:')
+for row in person_rows:
+    print(f"{row[0]}: {row[1]} {row[2]}, {row[3]} years old")
+
+print()
+
+cursor.execute('SELECT * FROM pet')
+pet_rows = cursor.fetchall()
+
+print('Pets:')
+for row in pet_rows:
+    print(f"{row[0]}: {row[1]}, {row[2]}, {row[3]} years old")
+
+print()
+
+cursor.execute('''
+SELECT person.first_name, person.last_name, pet.name, pet.breed
+FROM person_pet
+JOIN person ON person.id = person_pet.person_id
+JOIN pet ON pet.id = person_pet.pet_id
+''')
+
+person_pet_rows = cursor.fetchall()
+
+print('Person-Pet Relationships:')
+for row in person_pet_rows:
+    print(f"{row[0]} {row[1]} owns {row[2]}, a {row[3]}")
+
+conn.close()
